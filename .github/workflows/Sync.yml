@@ -1,33 +1,29 @@
-# 定义工作流名称和触发条件
-name: Sync markdown files
+name: ci
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  sync:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      # 同步到 siyijiang/sixiang-docusaurus 仓库
       - name: Sync to sixiang-docusaurus
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
-          # 目标仓库信息
           repository: siyijiang/sixiang-docusaurus
           ref: main
           path: sixiang-docusaurus
-        # 复制文件到目标仓库
       - name: Copy files to sixiang-docusaurus
           run:|
             cp -r . sixiang-docusaurus/docs/
-        # 添加和提交更改
       - name: Commit changes to sixiang-docusaurus
         uses: EndBug/add-and-commit@v7
         with:
             message: Sync with siyijiang/sixiang-core
             directory: sixiang-docusaurus
             push: true
-          # 使用 Github Token 授权提交更改
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
