@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync to sixiang-docusaurus
+        uses: actions/checkout@v3
+        with:
+          repository: siyijiang/sixiang-docusaurus
+          ref: main
+          path: sixiang-docusaurus
+      - name: Copy files to sixiang-docusaurus
+          run:|
+            cp -r . sixiang-docusaurus/docs/
+      - name: Commit changes to sixiang-docusaurus
+        uses: EndBug/add-and-commit@v7
+        with:
+            message: Sync with siyijiang/sixiang-core
+            directory: sixiang-docusaurus
+            push: true
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
